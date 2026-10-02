@@ -10,13 +10,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
@@ -35,7 +35,6 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/mern-client
             docker pull ${{ secrets.DOCKER_USERNAME }}/mern-server
@@ -46,12 +45,7 @@ jobs:
             docker stop server || true
             docker rm server || true
 
-            docker run -d \
-              -p 80:80 \
-              --name client \
-              ${{ secrets.DOCKER_USERNAME }}/mern-client
+            docker run -d -p 80:80 --name client ${{ secrets.DOCKER_USERNAME }}/mern-client
+            docker run -d -p 5000:5000 --name server ${{ secrets.DOCKER_USERNAME }}/mern-server
 
-            docker run -d \
-              -p 5000:5000 \
-              --name server \
-              ${{ secrets.DOCKER_USERNAME }}/mern-server
+That push will trigger the workflow again.
