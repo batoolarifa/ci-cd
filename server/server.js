@@ -10,6 +10,10 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/api/status", (req, res) => {
+  res.send("Backend API is working successfully");
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
